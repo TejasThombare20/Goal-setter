@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+  mongoDB :
+    image : "mongo"
+    volumes:
+      - data:/data/db
+    environment : 
+      MONGO_USERNAME : tejas
+      MONGO_PASSWORD : tejas
+      # - MONGO_PASSWORD_PWD = tejas
+    env_file : 
+      - ./env/mongo.env
+    networks : 
+      - goals-net
+
+  backend : 
+    build : "./backend"
+      # build :  
+      #   context: "./backend"
+      #   dockerfile : dockerfile
+      #   args :
+      #     some-arg : 1
+    ports:
+        - '80:80'
+    volumes:
+        - logs:/app/logs
+        - ./backend :/app
+        - /app/node_modules
+
+    env_file :
+        - ./env/backend.env
+      
+      # depends_on : 
+      #   - mongoDB
+
+  frontend : 
+    build : ./frontend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./frontend/src :/app/src
+    stdin_open: true
+    tty : true
+volumes:
+  data : 
+  logs :
+
+networks:
+  goals-net: 
+
+
+
+    
+  
